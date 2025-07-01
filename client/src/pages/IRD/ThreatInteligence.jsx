@@ -6,7 +6,7 @@ import { Button } from "../../components/ui/Button";
 const ThreatInteligence = () => {
     return (
         <>
-            <div className="bg-black rounded-lg w-64 h-64 text-white flex flex-col">
+            <div className="bg-black rounded-lg h-64 text-white flex flex-col">
 
                 <h2 className="font-semibold m-4">Threat Inteligence</h2>
                 <Input placeholder="Enter Ip addressess,Hash..." className="bg-gray-500 text-white m-4" />

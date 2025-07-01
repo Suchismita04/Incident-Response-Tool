@@ -82,7 +82,7 @@ const Alart = () => {
     return (
 
         <>
-            <div className="fixed left-0 rounded-lg top-5 bg-black text-white w-64 h-135 m-4 overflow-y-auto">
+            <div className="  rounded-lg top-5 bg-black text-white  h-135 m-4 overflow-y-auto">
                 <h2 className="font-semibold text-white m-2">Alarts</h2>
                 {alarts.map((item,index)=>{
                     return (

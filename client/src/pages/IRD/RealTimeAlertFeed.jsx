@@ -4,7 +4,7 @@ import { Button } from "../../components/ui/Button";
 
 const RealTimeAlertFeed = () => {
     return (
-        <div className="flex items-center justify-center mt-4 ">
+        <div className="flex items-center justify-center ">
             <div className="shadow max-w-3xl w-full mx-2 bg-white rounded-lg">
                 <div className="bg-gray-100 text-center flex justify-between items-center px-4 py-2">
                     <p className="text-black font-bold">Ransomware Infection On HR's Server</p>
