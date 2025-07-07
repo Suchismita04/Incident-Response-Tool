@@ -1,0 +1,16 @@
+# Go binaries
+*.exe
+*.out
+*.test
+
+# Local env files
+.env
+
+# Dependency directories
+/vendor/
+
+# System files
+internal/config/db.go
+# internal/config/secrets.yaml
+
+/internal/util/setHeaders.go
