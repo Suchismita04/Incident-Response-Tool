@@ -9,7 +9,7 @@ import { createBrowserRouter, Outlet, RouterProvider } from 'react-router-dom'
 function NavLayOut() {
   return (
     <>
-      {/* <Nav /> */}
+      <Nav />
       <Outlet/> {" "}
     </>
   )
