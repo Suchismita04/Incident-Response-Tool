@@ -14,20 +14,21 @@ import (
 )
 
 func GetIncidents(w http.ResponseWriter, r *http.Request) {
-	user := os.Getenv("WAZUH_USER")
-	pass := os.Getenv("WAZUH_PASS")
-	api := os.Getenv("WAZUH_API")
-
-	url := fmt.Sprintf("https://%s/alerts?limit=10", api)
-
 	if err := godotenv.Load(); err != nil {
 		log.Println("Warning: .env file not found")
 	}
 
-	// make a http request to the wazuh server
-	req, _ := http.NewRequest("GET", url, nil) // will change later
+	user := os.Getenv("WAZUH_USER")
+	pass := os.Getenv("WAZUH_PASS")
+	api := os.Getenv("WAZUH_API")
 
+	url := fmt.Sprintf("https://%s/security/user/authenticate", api)
+
+	// make a http request to the wazuh server
+	req, _ := http.NewRequest("POST", url, nil)
 	req.SetBasicAuth(user, pass)
+	req.Header.Set("Content-Type", "application/json")
+	fmt.Print("token from server\n", req)
 
 	// this will skip the browsers specific ssl error
 	tr := &http.Transport{
