@@ -4,7 +4,7 @@ import {useNavigate} from "react-router-dom";
 const Incidents = ({ incidentList }) => {
     // const incidentList = props 
     console.log(incidentList)
-    console.log(typeof (incidentList))
+    // console.log(typeof (incidentList))
     const navigate= useNavigate()
 
     const handelNavigate=()=>{
