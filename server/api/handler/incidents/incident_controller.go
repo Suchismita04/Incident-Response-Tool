@@ -1,6 +1,7 @@
 package incidents
 
 import (
+	"bytes"
 	"crypto/tls"
 	"encoding/json"
 	"fmt"
@@ -13,6 +14,48 @@ import (
 	"github.com/joho/godotenv"
 )
 
+type OpenSearchSearchResponse struct {
+	Took     int  `json:"took"`
+	TimedOut bool `json:"timed_out"`
+	Shards   struct {
+		Total      int `json:"total"`
+		Successful int `json:"successful"`
+		Skipped    int `json:"skipped"`
+		Failed     int `json:"failed"`
+	} `json:"_shards"`
+	Hits struct {
+		Total struct {
+			Value    int    `json:"value"`
+			Relation string `json:"relation"`
+		} `json:"total"`
+		MaxScore interface{} `json:"max_score"` // Can be float64 or null
+		Hits     []struct {
+			Index  string          `json:"_index"`
+			ID     string          `json:"_id"`
+			Score  interface{}     `json:"_score"`  // Can be float64 or null
+			Source json.RawMessage `json:"_source"` // Raw JSON for the actual alert document
+		} `json:"hits"`
+	} `json:"hits"`
+}
+
+// WazuhAlert represents a simplified structure for a Wazuh alert/incident,
+// extracted from the '_source' field of an OpenSearch hit.
+type WazuhAlert struct {
+	ID        string `json:"_id"` // Add this to store the _id from the hit
+	Timestamp string `json:"@timestamp"`
+	Rule      struct {
+		ID          string `json:"id"`
+		Level       int    `json:"level"`
+		Description string `json:"description"`
+	} `json:"rule"`
+	Agent struct {
+		ID   string `json:"id"`
+		Name string `json:"name"`
+		IP   string `json:"ip"`
+	} `json:"agent"`
+	FullLog string `json:"full_log"`
+}
+
 func GetIncidents(w http.ResponseWriter, r *http.Request) {
 	if err := godotenv.Load(); err != nil {
 		log.Println("Warning: .env file not found")
@@ -23,13 +66,37 @@ func GetIncidents(w http.ResponseWriter, r *http.Request) {
 	api := os.Getenv("WAZUH_API")
 	baseURL := fmt.Sprintf("https://%s", api)
 
-	url := baseURL + "/security/user/authenticate"
+	url := baseURL + "/wazuh-alerts-*/_search"
+
+	/**
+	  @define search quary
+	  **/
+	searchQuary := map[string]any{
+		"sort": []map[string]any{
+			{
+				"@timestamp": map[string]string{
+					"order": "desc",
+				},
+			},
+		},
+		"size": 20,
+		"query": map[string]any{
+			"match_all": map[string]any{},
+		},
+	}
+
+	/**
+		  @ convert the search quary in json body
+	**/
+	quarybody, err := json.Marshal(searchQuary)
+	if err != nil {
+		util.ThrowApiError("Failed to contact Wazuh", 500)
+	}
 
 	// make a http request to the wazuh server
-	req, _ := http.NewRequest("POST", url, nil)
+	req, _ := http.NewRequest("POST", url, bytes.NewBuffer(quarybody))
 	req.SetBasicAuth(user, pass)
 	req.Header.Set("Content-Type", "application/json")
-	// fmt.Print("token from server\n", req)
 
 	// this will skip the browsers specific ssl error
 	tr := &http.Transport{
@@ -43,61 +110,55 @@ func GetIncidents(w http.ResponseWriter, r *http.Request) {
 	res, err := client.Do(req)
 
 	if err != nil {
-		util.ThrowApiError("Failed to contact Wazuh", 500)
+		util.ThrowApiError("Failed to contact Wazuh indexer:", 500)
 	}
 
 	defer res.Body.Close()
 
-	authbody, _ := io.ReadAll(res.Body)
+	if res.StatusCode != http.StatusOK {
+		responseBody, _ := io.ReadAll(res.Body)
+		log.Printf("Wazuh Indexer returned non-OK status: %d - %s", res.StatusCode, string(responseBody))
+		util.ThrowApiError(" Wazuh API indexer error:", res.StatusCode)
+	}
 
 	/**
-	@ extract the token from res
-	*/
+	      @Read the entire response body from the Indexer
+		**/
 
-	var authResp struct {
-		Data struct {
-			Token string `json:"token"`
-		} `json:"data"`
-	}
-	if err := json.Unmarshal(authbody, &authResp); err != nil {
-		util.ThrowApiError("Failed to parse auth token", 500)
-
-	}
-
-	token := authResp.Data.Token
-	if token == "" {
-		util.ThrowApiError("Token not found in response", 500)
-	}
-
-	agentUrl := baseURL + "/alerts"
-
-	agentReq, err := http.NewRequest("GET", agentUrl, nil)
+	responseBody, err := io.ReadAll(res.Body)
 	if err != nil {
-		util.ThrowApiError("Failed to create agents request", 500)
-
+		util.ThrowApiError("Failed to read Indexer response", http.StatusInternalServerError)
 	}
 
-	agentReq.Header.Set("Authorization", "Bearer "+token)
-	agentReq.Header.Set("Content-Type", "application/json")
-
-	agentRes, err := client.Do(agentReq)
+	var searchResp OpenSearchSearchResponse
+	// Unmarshal the JSON response into the OpenSearchSearchResponse struct
+	err = json.Unmarshal(responseBody, &searchResp)
 	if err != nil {
-		util.ThrowApiError("Failed to get agents from Wazuh", 500)
+		util.ThrowApiError("Failed to parse Indexer response", http.StatusInternalServerError)
 
 	}
 
-	agentData, err := io.ReadAll(agentRes.Body)
+	var alerts []WazuhAlert
 
-	defer agentRes.Body.Close()
+	for _, hit := range searchResp.Hits.Hits {
+		var alert WazuhAlert
+
+		alert.ID = hit.ID
+		// Unmarshal the JSON response into the WazuhAlert struct
+		err := json.Unmarshal(hit.Source, &alert)
+		if err != nil {
+			log.Printf("Failed to parse alert: %v", err)
+			continue // skip the alert
+		}
+		alerts = append(alerts, alert)
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+
+	err = json.NewEncoder(w).Encode(alerts)
 	if err != nil {
-		util.ThrowApiError("Failed to read agents response", 500)
-
+		util.ThrowApiError("Failed to encode response", http.StatusInternalServerError)
 	}
-	// fmt.Println("agentsRes is nil?", agentRes == nil)
-	// fmt.Println("agentsRes.Body is nil?", agentRes != nil && agentRes.Body == nil)
 
-	fmt.Print("data from agent:\n", string(agentData))
-	util.SetHeaders(w)
-	w.WriteHeader(agentRes.StatusCode)
-	w.Write(agentData)
 }
