@@ -12,7 +12,7 @@ const ResponseActionsPanel = () => {
 
     return (
         <>
-            <div className=" rounded-lg h-64  max-w-auto text-white bg-black ">
+            <div className="top-17  relative rounded-lg h-100  max-w-auto text-white bg-black ">
               
                     <p className="m-2 font-semibold text-lg">Response Action</p>
                     <div className="space-y-2 flex flex-col m-2">

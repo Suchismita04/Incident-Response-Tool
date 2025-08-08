@@ -42,38 +42,9 @@ const Alart = () => {
           "response_actions": ["Block IP"],
           "detected_by": "Firewall-LogMonitor"
         },
-        {
-          "id": "alert-1003",
-          "timestamp": "2025-04-25T13:20:05Z",
-          "severity": "medium",
-          "category": "Suspicious File",
-          "source": {
-            "ip": "192.168.5.101",
-            "hostname": "laptop-19",
-            "user": "maria.garcia"
-          },
-          "description": "Unrecognized executable downloaded from suspicious domain.",
-          "recommendation": "Quarantine file and investigate domain.",
-          "status": "open",
-          "response_actions": ["Generate Report"],
-          "detected_by": "Antivirus-Engine"
-        },
-        {
-          "id": "alert-1004",
-          "timestamp": "2025-04-25T15:05:55Z",
-          "severity": "low",
-          "category": "Unusual User Activity",
-          "source": {
-            "ip": "10.0.0.45",
-            "hostname": "workstation-07",
-            "user": "david.lee"
-          },
-          "description": "User accessed sensitive documents after hours.",
-          "recommendation": "Review activity logs.",
-          "status": "closed",
-          "response_actions": ["Generate Report"],
-          "detected_by": "SIEM"
-        }
+       
+        
+        
       ]
       
 
@@ -82,7 +53,7 @@ const Alart = () => {
     return (
 
         <>
-            <div className="  rounded-lg top-5 bg-black text-white  h-135 m-4 overflow-y-auto">
+            <div className="max-w-3xl mx-auto  top-17 relative p-2 rounded-lg bg-black text-white   m-4 ">
                 <h2 className="font-semibold text-white m-2">Alarts</h2>
                 {alarts.map((item,index)=>{
                     return (

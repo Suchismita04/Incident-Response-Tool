@@ -1,30 +1,13 @@
-import React, { useEffect, useState } from "react";
+
 import Incidents from "./Incidents";
 import Card from "../../components/Card";
-import axios from "axios"
+import { useContext } from "react";
+import DataContext from "../../context/DataContext";
+
 
 const Dashboard = () => {
-  const [incidentList, setincidentList] = useState([])
-  const [error, setError] = useState("")
-
-
-  const fetchIncidents = async () => {
-    try {
-      const res = await axios.post("http://localhost:4000/api/getIncident")
-      console.log("res from golang backend", res.data)
-      if (res.data) {
-        setincidentList(res.data)
-      }
-
-    } catch (error) {
-      console.log("Error from backend", error)
-      setError(error)
-    }
-
-  }
-
-  useEffect(() => { fetchIncidents() }, [])
-
+  
+const {incidentList,error}=useContext(DataContext)
 
   return (
 

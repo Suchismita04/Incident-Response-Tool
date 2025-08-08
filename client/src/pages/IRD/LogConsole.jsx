@@ -9,9 +9,9 @@ const LogConsole = () => {
     ]);
 
     return (
-        <div className="rounded-lg shadow max-w-3xl mx-auto m-4 text-white">
-            <h2 className="text-xl font-semibold mb-2 text-[#39FF14]">Log Analysis Console</h2>
-            <div className="bg-black rounded-lg p-4 h-60 overflow-y-auto font-mono text-sm">
+        <div className="rounded-lg bg-black p-2  max-w-3xl mx-auto m-4 text-white top-17 relative">
+            <h2 className="text-xl font-semibold mb-2 text-white">Log Analysis Console</h2>
+            <div className="rounded-lg p-4 h-60 overflow-y-auto font-mono text-sm">
                 {logs.map((log, index) => (
                     <div key={index} className="mb-2 text-gray-200">
                         {log}

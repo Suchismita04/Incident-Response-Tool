@@ -6,27 +6,44 @@ import ThreatInteligence from "./ThreatInteligence";
 import Alart from "./Alarts";
 import { Button } from "../../components/ui/Button";
 
+
 const IncidentResponseDashboard = () => {
+
+  
+
   return (
-    <div className="  w-screen bg-gray-700 p-4 gap-4">
-      
-      {/* Left Section - RealTime Alerts and Logs */}
-      <div className=" gap-4  overflow-y-auto">
-        <RealTimeAlertFeed />
-        <LogConsole />
-        <Alart />
+    <div className="bg-gray-200 p-6">
+
+      <div className=" flex justify-between gap-2">
+        {/* left Section - Intelligence */}
+        <div className="flex-1">
+          <ThreatInteligence />
+        </div>
+
+        {/* middle Section - RealTime Alerts and Logs */}
+        <div className="flex-1 flex-col  gap-2 mx-2">
+          <RealTimeAlertFeed />
+          <LogConsole />
+        
+        </div>
+
+        <div className="flex flex-1">
+            <Alart />
+        </div>
+
+        {/* Right Section - Actions */}
+        <div className="flex-1 gap-4">
+
+          <ResponseActionsPanel />
+        </div>
+
+      </div>
+      <div className=" ">
+        <Button className="bg-red-500 text-white w-40">
+          End Simulation
+        </Button>
       </div>
 
-      {/* Right Section - Intelligence & Actions */}
-      <div className="flex flex-col gap-4 w-1/3">
-        <ThreatInteligence />
-        <ResponseActionsPanel />
-        <div className="flex justify-center mt-auto">
-          <Button className="bg-red-500 text-white w-40">
-            End Simulation
-          </Button>
-        </div>
-      </div>
     </div>
   );
 };
