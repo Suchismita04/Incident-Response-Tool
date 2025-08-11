@@ -1,15 +1,15 @@
-
 package router
-import(
-	"github.com/gorilla/mux"
+
+import (
 	"server/api/handler/incidents"
-	
+
+	"github.com/gorilla/mux"
 )
 
-func RegisterIncidentRouter() *mux.Router{
+func RegisterIncidentRouter() *mux.Router {
 	r := mux.NewRouter()
-	
-	r.HandleFunc("/api/getIncident", incidents.GetIncidents).Methods("POST")
-   return r
-}
 
+	r.HandleFunc("/api/getIncident", incidents.GetIncidents).Methods("POST")
+	r.HandleFunc("/api/getSingleIncident/{id}", incidents.GetSingleIncidents).Methods("GET")
+	return r
+}
