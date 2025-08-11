@@ -23,7 +23,7 @@ flex-wrap: wrap justify-center items-center">
         <Card name="High security alart" totalNumber={incidentList.filter((incident,idx)=>incident.rule.leve>10).length} />
         <Card name="Resolve Incidents" totalNumber={45} />
       </div>
-      <Incidents incidentList={incidentList} />
+      <Incidents  />
 
     </>
   )

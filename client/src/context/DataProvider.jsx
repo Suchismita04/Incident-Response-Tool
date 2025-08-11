@@ -13,13 +13,13 @@ const DataProvider=({children})=>{
   const fetchIncidents = async () => {
     try {
       const res = await axios.post("http://localhost:4000/api/getIncident")
-      console.log("res from golang backend", res.data)
+      // console.log("res from golang backend", res.data)
       if (res.data) {
         setincidentList(res.data)
       }
 
     } catch (error) {
-      console.log("Error from backend", error)
+      // console.log("Error from backend", error)
       setError(error)
     }
 

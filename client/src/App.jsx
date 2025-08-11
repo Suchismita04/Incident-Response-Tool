@@ -5,6 +5,7 @@ import Nav from './components/Nav.jsx'
 import { createBrowserRouter, Outlet, RouterProvider } from 'react-router-dom'
 import DataProvider from './context/DataProvider.jsx'
 import Dashboard from './pages/dashboard/Dashboard.jsx'
+import UserAcc from './pages/Account/UserAcc.jsx'
 
 
 function NavLayOut() {
@@ -37,6 +38,10 @@ function App() {
         {
           path: "investigate/:id",
           element: <IncidentResponseDashboard />
+        },
+        {
+          path:"account",
+          element:<UserAcc/>
         }
       ]
 

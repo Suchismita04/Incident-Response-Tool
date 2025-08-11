@@ -1,14 +1,14 @@
 import React, { useContext } from "react";
-import {useNavigate} from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import DataContext from "../../context/DataContext";
 
-const Incidents = ({  }) => {
-  
-    const {incidentList,error}= useContext(DataContext)
-    const navigate= useNavigate()
+const Incidents = () => {
 
-    const handelNavigate=(id)=>{
-    navigate(`/investigate/${id}`)
+    const { incidentList, error } = useContext(DataContext)
+    const navigate = useNavigate()
+
+    const handelNavigate = (id) => {
+        navigate(`/investigate/${id}`)
     }
 
 
@@ -28,7 +28,7 @@ const Incidents = ({  }) => {
                 {
 
                     incidentList.map((incident, idx) => {
-                        console.log(incident._id);
+                      
                         return (
                             <div key={idx} className="relative flex justify-center items-center border border-black font-large overflow-x-auto shadow-md sm:rounded-lg flex p-8 m-8 gap-8">
 
@@ -38,7 +38,7 @@ const Incidents = ({  }) => {
                                 <p className="ml-4 mr-4 p-2 text-lg">{incident.agent.name}</p>
                                 <span className={`inline-flex items-center rounded-md bg-gray-50 px-2 py-1  text-green-700 ring-1 ring-green-600/20 ring-inset`}>{incident.rule.level}</span>
 
-                                <button className="text-white bg-blue-700 rounded-sm p-2" onClick={() => {handelNavigate(incident._id)}}>Investigate</button>
+                                <button className="text-white bg-blue-700 rounded-sm p-2" onClick={() => { handelNavigate(incident._id) }}>Investigate</button>
                             </div>
 
                         )

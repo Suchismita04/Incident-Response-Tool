@@ -28,7 +28,7 @@ const Nav = () => {
                                 <a href="#" className="block py-2 px-3 text-white bg-blue-700 rounded-sm md:bg-transparent md:text-white-700 md:p-0 md:dark:text-white-500" aria-current="page">Dashboard</a>
                             </li>
                             <li>
-                                <a href="#" className="block py-2 px-3 text-white bg-blue-700 rounded-sm md:bg-transparent md:text-white-700 md:p-0 md:dark:text-white-500" aria-current="page">Account</a>
+                                <a href="/account" className="block py-2 px-3 text-white bg-blue-700 rounded-sm md:bg-transparent md:text-white-700 md:p-0 md:dark:text-white-500" aria-current="page">Account</a>
                             </li>
                            
                         </ul>
