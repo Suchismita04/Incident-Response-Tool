@@ -5,7 +5,9 @@ import Nav from './components/Nav.jsx'
 import { createBrowserRouter, Outlet, RouterProvider } from 'react-router-dom'
 import DataProvider from './context/DataProvider.jsx'
 import Dashboard from './pages/dashboard/Dashboard.jsx'
-import UserAcc from './pages/Account/UserAcc.jsx'
+import UserAcc from './pages/User/UserAcc.jsx'
+import LandingPage from './pages/Home/LandingPage.jsx'
+import LogIn from './pages/User/LogIn.jsx'
 
 
 function NavLayOut() {
@@ -33,6 +35,10 @@ function App() {
       children: [
         {
           index:true,
+          element: <LandingPage/>
+        },
+        {
+          path: "/dashboard",
           element: <Dashboard/>
         },
         {
@@ -42,7 +48,12 @@ function App() {
         {
           path:"account",
           element:<UserAcc/>
+        },
+        {
+          path:"user/logIn",
+          element:<LogIn/>
         }
+
       ]
 
     }
