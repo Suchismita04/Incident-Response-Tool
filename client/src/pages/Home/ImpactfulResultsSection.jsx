@@ -6,10 +6,18 @@
 const ImpactfulResultsSection =()=>{
     return(
         <>
-        <section className="py-20 md:py-28 bg-slate-800">
+        <section className="py-20 md:py-28 bg-slate-800"
+        //  style={{backgroundImage:`url('src/assets/impact2.jpg')`,
+        //     backgroundSize: "cover",
+        //     backgroundPosition: "center",
+        //     backgroundRepeat: "no-repeat",
+        //     opacity:"0.7",
+
+        //  }}
+        >
         <div className="container mx-auto px-4 text-center">
-            <h2 className="text-4xl font-bold text-white mb-6 animate-reveal">Tangible Impact. Measurable Security.</h2>
-            <p className="text-lg text-slate-400 max-w-3xl mx-auto mb-12 animate-reveal animate-delay-1">
+            <h2 className="text-4xl font-extrabold text-white mb-6 ">Tangible Impact. Measurable Security.</h2>
+            <p className="text-lg text-white max-w-3xl mx-auto mb-12 ">
                 Our clients don't just feel safer; they see the difference in their security posture and operational efficiency.
             </p>
 

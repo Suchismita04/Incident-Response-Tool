@@ -1,79 +1,45 @@
 
 
 
-const LogIn=()=>{
-    return(
+
+const LogIn = ({ switchToSignUp }) => {
+   
+
+    return (
 
         <>
-         <div className="relative z-10 md:p-10 border border-tranparent rounded-lg card-enter shadow-2xl flex max-w-md w-full flex-col justify-center px-6 py-12 lg:px-8  bg-slate-800 bg-opacity-70 backdrop-blur-lg">
-        <div className="text-center mb-8">
-          <h1 className="tracking-tight text-white font-bold">Access Terminal</h1>
-          <p className="mt-10 text-center tracking-tight text-white">Log in to your CyberShield dashboard</p>
-        </div>
-
-        <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-          <form action="#" method="POST" className="space-y-6">
-            <div>
-              <label htmlFor="email" className="block text-sm/6 font-medium text-slate-300">
-                Auth Id
-              </label>
-              <div className="mt-2">
-                <input
-                  id="email"
-                  name="email"
-                  type="email"
-                  required
-                  placeholder="user@cybershield.com"
-                  autoComplete="email"
-                  className="block w-full rounded-md bg-white/5 px-3 py-1.5 text-base text-white outline-1 -outline-offset-1 outline-white/10 placeholder:text-gray-500 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-500 sm:text-sm/6"
-                />
-              </div>
-            </div>
-
-            <div>
-              <div className="flex items-center justify-between">
-                <label htmlFor="password" className="block text-sm/6 font-medium text-slate-300">
-                  Secure Key
-                </label>
-                <div className="text-sm">
-                  <a href="#" className="font-semibold text-indigo-400 hover:text-indigo-300">
-                    Forgot secure key?
-                  </a>
+            <div className="relative z-10 border border-indigo-500 bg-slate-800 bg-opacity-70 backdrop-blur-lg p-8 md:p-10 rounded-xl  max-w-md w-full  card-enter">
+                <div className="text-center mb-8">
+                    <h1 className="text-3xl md:text-4xl font-extrabold text-white mb-2">Access Terminal</h1>
+                    <p className="text-slate-400 text-lg">Log in to your CyberShield dashboard.</p>
                 </div>
-              </div>
-              <div className="mt-2">
-                <input
-                  id="password"
-                  name="password"
-                  type="password"
-                  placeholder="*******"
-                  required
-                  autoComplete="current-password"
-                  className="block w-full rounded-md  px-3 py-1.5 text-base text-white outline-1 -outline-offset-1 outline-white/10 placeholder:text-gray-500 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-500 sm:text-sm/6"
-                />
-              </div>
+
+
+                <form >
+                    <div className="mb-6">
+                        <label for="email" className="block text-slate-300 text-sm font-semibold mb-2">AUTH ID</label>
+                        <input type="email" id="email" name="email" placeholder="user@cybershield.com" className="w-full px-4 py-3 rounded-lg bg-slate-900 bg-opacity-50 text-white border border-slate-700 focus:border-indigo-500 focus:ring-0 outline-none transition duration-300" required />
+                    </div>
+                    <div className="mb-6">
+                        <label for="password" className="block text-slate-300 text-sm font-semibold mb-2">Secure Key</label>
+                        <input type="password" id="password" name="password" placeholder="••••••••" className="w-full px-4 py-3 rounded-lg bg-slate-900 bg-opacity-50 text-white border border-slate-700 focus:border-indigo-500 focus:ring-0 outline-none transition duration-300" required />
+                    </div>
+                    <div className="flex justify-between items-center mb-8">
+                        <a href="#" className="text-indigo-400 hover:text-indigo-300 text-sm font-medium transition duration-200">Forgot Secure Key?</a>
+                    </div>
+                    <button type="submit" className="w-full gradient-bg text-white font-bold py-3 px-6 rounded-full shadow-lg transition duration-300 ease-in-out button-hover-glow">
+                        INITIATE ACCESS
+                    </button>
+                </form>
+
+
+                <p className="text-center text-slate-400 text-sm mt-8">
+                    New to CyberShield?
+                    <button  onClick={switchToSignUp}  className="text-indigo-400 hover:text-indigo-300 font-semibold transition duration-200">Create Profile</button>
+                   
+                </p>
             </div>
 
-            <div>
-              <button
-                type="submit"
-                className="flex w-full justify-center rounded-lg shadow-none hover:shadow-sky-700 bg-indigo-500 px-3 py-1.5 text-sm/6 font-semibold text-white hover:bg-indigo-400 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500"
-              >
-                LogIn
-              </button>
-            </div>
-          </form>
-
-          <p className="mt-10 text-center text-sm/6 text-gray-400">
-            Not a member?{' '}
-            <a href="user/signIn" className="font-semibold text-indigo-400 hover:text-indigo-300">
-              Start a 14 day free trial
-            </a>
-          </p>
-        </div>
-      </div>
-        
-        
         </>
     )
 }

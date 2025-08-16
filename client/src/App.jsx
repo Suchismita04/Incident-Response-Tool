@@ -8,6 +8,8 @@ import Dashboard from './pages/dashboard/Dashboard.jsx'
 import UserAcc from './pages/User/UserAcc.jsx'
 import LandingPage from './pages/Home/LandingPage.jsx'
 import LogIn from './pages/User/LogIn.jsx'
+import SignIn from './pages/User/SignIn.jsx'
+import AboutUs from './pages/AboutUs/AboutUs.jsx'
 
 
 function NavLayOut() {
@@ -46,12 +48,20 @@ function App() {
           element: <IncidentResponseDashboard />
         },
         {
-          path:"account",
+          path:"/account",
           element:<UserAcc/>
         },
         {
-          path:"user/logIn",
+          path:"/logIn",
           element:<LogIn/>
+        },
+        {
+          path:"/signIn",
+          element:<SignIn/>
+        },
+        {
+          path:"/aboutUs",
+          element:<AboutUs/>
         }
 
       ]
