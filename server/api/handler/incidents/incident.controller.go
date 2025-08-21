@@ -9,12 +9,13 @@ import (
 	"log"
 	"net/http"
 	"os"
-	"server/internal/util"
+	"server/internal/util" // Assuming this has ThrowApiError and SetHeaders
 
 	"github.com/gorilla/mux"
 	"github.com/joho/godotenv"
 )
 
+// OpenSearchSearchResponse represents the top-level structure of the OpenSearch/Elasticsearch search API response.
 type OpenSearchSearchResponse struct {
 	Took     int  `json:"took"`
 	TimedOut bool `json:"timed_out"`
@@ -55,9 +56,16 @@ type WazuhAlert struct {
 		IP   string `json:"ip"`
 	} `json:"agent"`
 	FullLog string `json:"full_log"`
+	// Add more fields here as needed based on the structure of your Wazuh alerts
+	// Example:
+	// Location string `json:"location"`
+	// Data     struct {
+	// 	SrcIP string `json:"srcip"`
+	// 	DstIP string `json:"dstip"`
+	// } `json:"data"`
 }
 
-// return all incident
+// GetIncidents fetches the latest incidents directly from the Wazuh Indexer.
 func GetIncidents(w http.ResponseWriter, r *http.Request) {
 	if err := godotenv.Load(); err != nil {
 		log.Println("Warning: .env file not found")
@@ -84,6 +92,10 @@ func GetIncidents(w http.ResponseWriter, r *http.Request) {
 		"size": 20,
 		"query": map[string]any{
 			"match_all": map[string]any{},
+			"@timestamp": map[string]any{
+				"gte": "now-5s",
+				"lte": "now",
+			},
 		},
 	}
 
@@ -157,6 +169,8 @@ func GetIncidents(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Set("Content-Type", "application/json")
 	w.Header().Set("Access-Control-Allow-Origin", "*")
+
+	// correlation rule(alerts)
 
 	err = json.NewEncoder(w).Encode(alerts)
 	if err != nil {
