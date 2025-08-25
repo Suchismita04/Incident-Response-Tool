@@ -9,7 +9,8 @@ import (
 	"log"
 	"net/http"
 	"os"
-	"server/internal/util" // Assuming this has ThrowApiError and SetHeaders
+	"server/internal/model"
+	"server/internal/util"
 
 	"github.com/gorilla/mux"
 	"github.com/joho/godotenv"
@@ -30,20 +31,18 @@ type OpenSearchSearchResponse struct {
 			Value    int    `json:"value"`
 			Relation string `json:"relation"`
 		} `json:"total"`
-		MaxScore interface{} `json:"max_score"` // Can be float64 or null
+		MaxScore interface{} `json:"max_score"`
 		Hits     []struct {
 			Index  string          `json:"_index"`
 			ID     string          `json:"_id"`
-			Score  interface{}     `json:"_score"`  // Can be float64 or null
-			Source json.RawMessage `json:"_source"` // Raw JSON for the actual alert document
+			Score  interface{}     `json:"_score"`
+			Source json.RawMessage `json:"_source"`
 		} `json:"hits"`
 	} `json:"hits"`
 }
 
-// WazuhAlert represents a simplified structure for a Wazuh alert/incident,
-// extracted from the '_source' field of an OpenSearch hit.
 type WazuhAlert struct {
-	ID        string `json:"_id"` // Add this to store the _id from the hit
+	ID        string `json:"_id"`
 	Timestamp string `json:"@timestamp"`
 	Rule      struct {
 		ID          string `json:"id"`
@@ -56,13 +55,6 @@ type WazuhAlert struct {
 		IP   string `json:"ip"`
 	} `json:"agent"`
 	FullLog string `json:"full_log"`
-	// Add more fields here as needed based on the structure of your Wazuh alerts
-	// Example:
-	// Location string `json:"location"`
-	// Data     struct {
-	// 	SrcIP string `json:"srcip"`
-	// 	DstIP string `json:"dstip"`
-	// } `json:"data"`
 }
 
 // GetIncidents fetches the latest incidents directly from the Wazuh Indexer.
@@ -91,10 +83,12 @@ func GetIncidents(w http.ResponseWriter, r *http.Request) {
 		},
 		"size": 20,
 		"query": map[string]any{
-			"match_all": map[string]any{},
-			"@timestamp": map[string]any{
-				"gte": "now-5s",
-				"lte": "now",
+			"range": map[string]any{
+
+				"@timestamp": map[string]any{
+					"gte": "2025-08-25T00:00:00.000Z",
+					"lte": "2025-08-25T23:59:59.999Z",
+				},
 			},
 		},
 	}
@@ -152,10 +146,10 @@ func GetIncidents(w http.ResponseWriter, r *http.Request) {
 
 	}
 
-	var alerts []WazuhAlert
+	var alerts []model.WazuhAlert
 
 	for _, hit := range searchResp.Hits.Hits {
-		var alert WazuhAlert
+		var alert model.WazuhAlert
 
 		alert.ID = hit.ID
 		// Unmarshal the JSON response into the WazuhAlert struct
@@ -172,7 +166,11 @@ func GetIncidents(w http.ResponseWriter, r *http.Request) {
 
 	// correlation rule(alerts)
 
-	err = json.NewEncoder(w).Encode(alerts)
+	response := util.CorrelationRule(alerts)
+
+	fmt.Print("filtered incident:", response)
+
+	err = json.NewEncoder(w).Encode(response)
 	if err != nil {
 		util.ThrowApiError("Failed to encode response", http.StatusInternalServerError)
 	}

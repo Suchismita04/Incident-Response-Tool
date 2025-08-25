@@ -13,6 +13,8 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
+// Register User Controller
+
 func RegisterUser(res http.ResponseWriter, req *http.Request) {
 	res.Header().Set("Content-Type", "application/json")
 
@@ -52,4 +54,9 @@ func RegisterUser(res http.ResponseWriter, req *http.Request) {
 
 	res.WriteHeader(http.StatusCreated)
 	json.NewEncoder(res).Encode(map[string]string{"message": "User registered successfully"})
+}
+
+func LoginUser(res http.ResponseWriter, req *http.Request) {
+	res.Header().Set("Content-Type", "application/json")
+	// var user model.Users
 }
