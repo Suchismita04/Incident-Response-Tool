@@ -1,4 +1,4 @@
-import Footer from "../../components/Footer";
+
 import DataFlowSection from "./DataFlowSection";
 import HeroSection from "./HeroSection";
 import ImpactfulResultsSection from "./ImpactfulResultsSection";
@@ -15,7 +15,7 @@ const LandingPage = () => {
             <DataFlowSection/>
             <ImpactfulResultsSection/>
             <Testimonials/>
-            <Footer/>
+            
 
             </div>
 

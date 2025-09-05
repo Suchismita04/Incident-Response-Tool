@@ -9,6 +9,7 @@ const Dashboard = () => {
   
 const {incidentList,error}=useContext(DataContext)
 
+
   return (
 
 
@@ -20,7 +21,9 @@ const {incidentList,error}=useContext(DataContext)
 flex-wrap: wrap justify-center items-center">
         <Card name="Total Incidents" totalNumber={incidentList.length} />
         <Card name="Active Alerts" totalNumber={24} />
-        <Card name="High security alart" totalNumber={incidentList.filter((incident,idx)=>incident.rule.leve>10).length} />
+        <Card name="High security alart" totalNumber={incidentList.filter((incident,idx)=>incident.alerts.forEach(element => {
+          
+        element.rule.level})>10).length} />
         <Card name="Resolve Incidents" totalNumber={45} />
       </div>
       <Incidents  />

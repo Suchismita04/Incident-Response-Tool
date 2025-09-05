@@ -8,16 +8,19 @@ import Dashboard from './pages/dashboard/Dashboard.jsx'
 import UserAcc from './pages/User/UserAcc.jsx'
 import LandingPage from './pages/Home/LandingPage.jsx'
 import LogIn from './pages/User/LogIn.jsx'
-import SignIn from './pages/User/SignIn.jsx'
+import SignUp from './pages/User/SignUp.jsx'
 import AboutUs from './pages/AboutUs/AboutUs.jsx'
+import Footer from './components/Footer.jsx'
+import PlainLayout from './components/layout/PlainLayout.jsx'
 
 
 function NavLayOut() {
   return (
     <>
-    <DataProvider>
-      <Nav />
-      <Outlet/> {" "}
+      <DataProvider>
+        <Nav />
+        <Outlet /> {" "}
+        <Footer />
       </DataProvider>
     </>
   )
@@ -30,42 +33,47 @@ function App() {
     {
       path: "/",
       element: (
-        <NavLayOut/>
-        
+        <NavLayOut />
+
       ),
 
       children: [
         {
-          index:true,
-          element: <LandingPage/>
+          index: true,
+          element: <LandingPage />
         },
         {
           path: "/dashboard",
-          element: <Dashboard/>
+          element: <Dashboard />
         },
         {
           path: "investigate/:id",
           element: <IncidentResponseDashboard />
         },
         {
-          path:"/account",
-          element:<UserAcc/>
+          path: "/logIn",
+          element: <LogIn />
         },
         {
-          path:"/logIn",
-          element:<LogIn/>
+          path: "/SignUp",
+          element: <SignUp />
         },
         {
-          path:"/signIn",
-          element:<SignIn/>
-        },
-        {
-          path:"/aboutUs",
-          element:<AboutUs/>
+          path: "/aboutUs",
+          element: <AboutUs />
         }
 
       ]
 
+    },
+    {
+      element: (<PlainLayout />),
+      children: [
+        {
+          path: "/account",
+          element: <UserAcc />
+        },
+      ]
     }
   ])
 

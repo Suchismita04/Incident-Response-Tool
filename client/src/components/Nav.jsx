@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import LogIn from "../pages/User/LogIn";
 import ModalComponent from "./ModalComponent";
-import SignIn from "../pages/User/SignIn";
+import SignUp from "../pages/User/SignUp";
 import { Link } from "react-router-dom";
 
 
@@ -32,8 +32,8 @@ const Nav = () => {
                         <ModalComponent open={open}
                             handleClose={handleClose}
                             component={view === 'login' ? 
-                            <LogIn switchToSignUp={()=>setView('signin')} /> 
-                            : <SignIn switchToLogin={()=>setView('login')} />}
+                            <LogIn switchToSignUp={()=>setView('SignUp')} onClose={handleClose} /> 
+                            : <SignUp switchToLogin={()=>setView('login')} onClose={handleClose} />}
                         />
 
 
