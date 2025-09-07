@@ -12,16 +12,19 @@ import SignUp from './pages/User/SignUp.jsx'
 import AboutUs from './pages/AboutUs/AboutUs.jsx'
 import Footer from './components/Footer.jsx'
 import PlainLayout from './components/layout/PlainLayout.jsx'
+import { AuthProvider } from './context/Auth/AuthProvider.jsx'
 
 
 function NavLayOut() {
   return (
     <>
-      <DataProvider>
-        <Nav />
-        <Outlet /> {" "}
-        <Footer />
-      </DataProvider>
+      {/* <DataProvider> */}
+        <AuthProvider>
+          <Nav />
+          <Outlet /> {" "}
+          <Footer />
+        </AuthProvider>
+      {/* </DataProvider> */}
     </>
   )
 }

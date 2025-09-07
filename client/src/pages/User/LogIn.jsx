@@ -1,6 +1,7 @@
 import axios from "axios"
 import { useState } from "react"
 import { useNavigate } from "react-router-dom"
+import { useAuth } from "../../context/Auth/AuthProvider"
 
 
 
@@ -13,6 +14,8 @@ const LogIn = ({ switchToSignUp, onClose }) => {
     password:""
   })
 
+  const {setToken}= useAuth()
+
 
     const handleChange=(e)=>{
        setFormData({
@@ -20,14 +23,16 @@ const LogIn = ({ switchToSignUp, onClose }) => {
         [e.target.name]:e.target.value
        })
     }
-
+  console.log(formData)
     const handleSubmit = async (e) => {
-        e.preventDefault()
+         e.preventDefault();
+           console.log("handleSubmit triggered");
         try {
-            const res= await axios.post("http://localhost:4000/api/user/logIn")
-            console.log("response data",res)
+            const res= await axios.post("http://localhost:4000/api/user/logIn",formData,{withCredentials:true})
+            console.log("response data",res.data)
+            setToken(res.data.token)
             if(onClose) onClose()
-            navigate('/dashboard')
+            navigate('/account')
 
         } catch (error) {
             console.error("Error",error)
@@ -45,7 +50,7 @@ const LogIn = ({ switchToSignUp, onClose }) => {
                 </div>
 
 
-                <form >
+                <form onSubmit={handleSubmit} >
                     <div className="mb-6">
                         <label for="email" className="block text-slate-300 text-sm font-semibold mb-2">AUTH ID</label>
                         <input type="email" id="email" onChange={handleChange} value={formData.email} name="email" placeholder="user@cybershield.com" className="w-full px-4 py-3 rounded-lg bg-slate-900 bg-opacity-50 text-white border border-slate-700 focus:border-indigo-500 focus:ring-0 outline-none transition duration-300" required />
@@ -57,7 +62,7 @@ const LogIn = ({ switchToSignUp, onClose }) => {
                     <div className="flex justify-between items-center mb-8">
                         <a href="#" className="text-indigo-400 hover:text-indigo-300 text-sm font-medium transition duration-200">Forgot Secure Key?</a>
                     </div>
-                    <button type="submit" onSubmit={handleSubmit} className="w-full gradient-bg text-white font-bold py-3 px-6 rounded-full shadow-lg transition duration-300 ease-in-out button-hover-glow">
+                    <button type="submit"  className="w-full gradient-bg text-white font-bold py-3 px-6 rounded-full shadow-lg transition duration-300 ease-in-out button-hover-glow">
                         INITIATE ACCESS
                     </button>
                 </form>
