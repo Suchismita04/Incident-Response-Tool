@@ -6,7 +6,11 @@ require github.com/gorilla/mux v1.8.1
 
 require github.com/joho/godotenv v1.5.1
 
-require github.com/montanaflynn/stats v0.7.1 // indirect
+require (
+	github.com/golang-jwt/jwt/v5 v5.3.0 // indirect
+	github.com/montanaflynn/stats v0.7.1 // indirect
+	github.com/rs/cors v1.11.1 // indirect
+)
 
 require (
 	github.com/golang/snappy v1.0.0 // indirect

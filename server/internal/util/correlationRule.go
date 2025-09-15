@@ -4,7 +4,7 @@ import "server/internal/model"
 
 func CorrelationRule(alerts []model.WazuhAlert) map[string]any {
 	incidentMap := make(map[string][]model.WazuhAlert)
-
+	incidentId := 1 // for dummy incidents
 	for _, alert := range alerts {
 		ip := alert.Agent.IP
 
@@ -21,14 +21,17 @@ func CorrelationRule(alerts []model.WazuhAlert) map[string]any {
 	for ip, ipAlerts := range incidentMap {
 		if len(ipAlerts) >= 3 {
 			correlatedIncidents = append(correlatedIncidents, map[string]any{
+				"id":        incidentId,
 				"source_ip": ip,
 				"count":     len(ipAlerts),
 				"alerts":    ipAlerts,
 			})
+			incidentId++
 		}
 	}
 
 	response := map[string]any{
+
 		"alerts":     alerts,
 		"incidents":  correlatedIncidents,
 		"total":      len(alerts),

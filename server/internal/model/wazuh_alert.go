@@ -2,7 +2,7 @@ package model
 
 type WazuhAlert struct {
 	ID        string `json:"_id"`
-	Timestamp string `json:"@timestamp"`
+	Timestamp string `json:"timestamp"`
 	Rule      struct {
 		ID          string `json:"id"`
 		Level       int    `json:"level"`
