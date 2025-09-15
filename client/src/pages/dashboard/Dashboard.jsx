@@ -9,6 +9,8 @@ const Dashboard = () => {
   
 const {incidentList,error}=useContext(DataContext)
 
+console.log("data from dashboard",incidentList)
+
 
   return (
 

@@ -65,7 +65,7 @@ const SignUp = ({ switchToLogin ,onClose }) => {
                         <input type="password" id="password" onChange={handleChage} value={formData.password} name="password" placeholder="••••••••" className="w-full px-4 py-3 rounded-lg bg-slate-900 bg-opacity-50 text-white border border-slate-700 focus:border-indigo-500 focus:ring-0 outline-none transition duration-300" required />
                     </div>
 
-                    <button type="submit" className="w-full gradient-bg text-white font-bold py-3 px-6 rounded-full shadow-lg transition duration-300 ease-in-out button-hover-glow">
+                    <button type="submit" className="w-full bg-gradient-to-r from-purple-500 to-blue-600 text-white font-bold py-3 px-6 rounded-full shadow-lg ">
                         SECURE PROFILE
                     </button>
                 </form>

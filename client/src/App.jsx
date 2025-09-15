@@ -13,18 +13,19 @@ import AboutUs from './pages/AboutUs/AboutUs.jsx'
 import Footer from './components/Footer.jsx'
 import PlainLayout from './components/layout/PlainLayout.jsx'
 import { AuthProvider } from './context/Auth/AuthProvider.jsx'
+import Report from './pages/report/Report.jsx'
 
 
 function NavLayOut() {
   return (
     <>
-      {/* <DataProvider> */}
+      <DataProvider>
         <AuthProvider>
           <Nav />
           <Outlet /> {" "}
           <Footer />
         </AuthProvider>
-      {/* </DataProvider> */}
+      </DataProvider>
     </>
   )
 }
@@ -49,10 +50,7 @@ function App() {
           path: "/dashboard",
           element: <Dashboard />
         },
-        {
-          path: "investigate/:id",
-          element: <IncidentResponseDashboard />
-        },
+       
         {
           path: "/logIn",
           element: <LogIn />
@@ -64,7 +62,8 @@ function App() {
         {
           path: "/aboutUs",
           element: <AboutUs />
-        }
+        },
+       
 
       ]
 
@@ -76,6 +75,14 @@ function App() {
           path: "/account",
           element: <UserAcc />
         },
+         {
+          path: "investigate/:id",
+          element: <IncidentResponseDashboard />
+        },
+         {
+          path:"/generateReport",
+          element:<Report/>
+        }
       ]
     }
   ])

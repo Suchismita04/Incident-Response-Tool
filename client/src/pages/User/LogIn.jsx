@@ -62,7 +62,7 @@ const LogIn = ({ switchToSignUp, onClose }) => {
                     <div className="flex justify-between items-center mb-8">
                         <a href="#" className="text-indigo-400 hover:text-indigo-300 text-sm font-medium transition duration-200">Forgot Secure Key?</a>
                     </div>
-                    <button type="submit"  className="w-full gradient-bg text-white font-bold py-3 px-6 rounded-full shadow-lg transition duration-300 ease-in-out button-hover-glow">
+                    <button type="submit"  className="w-full bg-gradient-to-r from-purple-500 to-blue-600 text-white font-bold py-3 px-6 rounded-full shadow-lg ">
                         INITIATE ACCESS
                     </button>
                 </form>
