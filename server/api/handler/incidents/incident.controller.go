@@ -460,7 +460,7 @@ func GetIncidents(w http.ResponseWriter, r *http.Request) {
 
 	response := util.CorrelationRule(alerts)
 
-	// fmt.Print("filtered incident:", response)
+	fmt.Print("filtered incident:", response)
 
 	err = json.NewEncoder(w).Encode(response)
 	if err != nil {

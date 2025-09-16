@@ -3,28 +3,29 @@ package util
 import "server/internal/model"
 
 func CorrelationRule(alerts []model.WazuhAlert) map[string]any {
-	incidentMap := make(map[string][]model.WazuhAlert)
+	incidentMap := make(map[int][]model.WazuhAlert)
 	incidentId := 1 // for dummy incidents
 	for _, alert := range alerts {
-		ip := alert.Agent.IP
+		level := alert.Rule.Level
 
-		if ip == "" {
+		if level == 0 {
 			continue
 		}
-		incidentMap[ip] = append(incidentMap[ip], alert)
+		incidentMap[level] = append(incidentMap[level], alert)
 	}
 
 	//correlation rule
 
 	var correlatedIncidents []map[string]any
 
-	for ip, ipAlerts := range incidentMap {
-		if len(ipAlerts) >= 3 {
+	for level, levelAlerts := range incidentMap {
+		if (level >= 5 && len(levelAlerts) >= 1) || (level >= 7 && len(levelAlerts) >= 3) {
 			correlatedIncidents = append(correlatedIncidents, map[string]any{
 				"id":        incidentId,
-				"source_ip": ip,
-				"count":     len(ipAlerts),
-				"alerts":    ipAlerts,
+				"rule_type": "Level-based correlation",
+				"level":     level,
+				"count":     len(levelAlerts),
+				"alerts":    levelAlerts,
 			})
 			incidentId++
 		}
