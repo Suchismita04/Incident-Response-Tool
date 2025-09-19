@@ -23,6 +23,7 @@ func main() {
 
 	// routers
 	incidentRouter.RegisterIncidentRouter(r)
+	incidentRouter.RegisterActionRouter(r)
 	userRouter.RegisterUserRouter(r)
 
 	c := cors.New(cors.Options{
