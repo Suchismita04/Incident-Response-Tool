@@ -1,6 +1,7 @@
 package incidents
 
 import (
+	"encoding/json"
 	"fmt"
 	"io"
 	"log"
@@ -9,6 +10,16 @@ import (
 	"strconv"
 	"strings"
 )
+
+var simulationMode = true
+
+func LogAction(action string, args ...string) {
+	if simulationMode {
+		fmt.Printf("[SIMULATION] %s %v\n", action, args)
+	} else {
+		fmt.Printf("[REAL] %s %v\n", action, args)
+	}
+}
 
 //Block IP
 
@@ -24,6 +35,11 @@ func BlockIncidentIp(w http.ResponseWriter, r *http.Request) {
 	ip := strings.TrimSpace(string(bodyBytes))
 
 	fmt.Print("ip address from fronted:", ip)
+	//for dummy data
+	if simulationMode {
+		LogAction("BlockIP", ip)
+		return
+	}
 
 	if ip == "127.0.0.1" || ip == "0.0.0.0" || ip == "::1" {
 		fmt.Printf("Refusing to block system/localhost IP: %s", ip)
@@ -48,12 +64,6 @@ func BlockIncidentIp(w http.ResponseWriter, r *http.Request) {
 
 }
 
-// disable user
-
-func DisableUser(w http.ResponseWriter, r *http.Request) {
-
-}
-
 //kill process
 
 func KillProcess(w http.ResponseWriter, r *http.Request) {
@@ -68,6 +78,11 @@ func KillProcess(w http.ResponseWriter, r *http.Request) {
 	}
 
 	fmt.Print("P id from frontend:", pID)
+
+	if simulationMode {
+		LogAction("Kill Process", pIDStr)
+		return
+	}
 
 	if error != nil {
 		http.Error(w, "Error reading request body", http.StatusInternalServerError)
@@ -90,4 +105,20 @@ func KillProcess(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 	fmt.Fprintf(w, "Successfully kill the process: %s", pIDStr)
 
+}
+
+func IsolateHostHandler(res http.ResponseWriter, req *http.Request) {
+
+	if simulationMode {
+		LogAction("Isolate Host")
+		return
+	}
+	cmd := exec.Command("powershell", "Get-NetAdapter | Disable-NetAdapter -Confirm:$false")
+	err := cmd.Run()
+
+	if err != nil {
+		http.Error(res, "Failed to isolate host", 500)
+		return
+	}
+	json.NewEncoder(res).Encode(map[string]string{"status": "Host successfully isolated"})
 }

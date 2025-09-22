@@ -12,5 +12,6 @@ func RegisterActionRouter(r *mux.Router) {
 	actionRouter.HandleFunc("/blockIncidentIp", incidents.BlockIncidentIp).Methods("POST")
 
 	actionRouter.HandleFunc("/killProcess", incidents.KillProcess).Methods("POST")
+	actionRouter.HandleFunc("/isolate-host", incidents.IsolateHostHandler).Methods("POST")
 
 }
