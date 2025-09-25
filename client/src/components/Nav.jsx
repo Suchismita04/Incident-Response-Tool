@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import LogIn from "../pages/User/LogIn";
 import ModalComponent from "./ModalComponent";
 import SignUp from "../pages/User/SignUp";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 
 
@@ -13,6 +13,7 @@ const Nav = () => {
     const [view, setView] = useState("login");
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
+   const  navigate= useNavigate()
 
 
     return (
@@ -24,7 +25,7 @@ const Nav = () => {
             <nav className="bg-indigo-900 dark:bg-gray-900  w-full  top-0 start-0  dark:border-gray-600">
                 <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
 
-                    <span className="self-center text-2xl font-semibold whitespace-nowrap text-white">CyberShield</span>
+                    <Link to={'/'} className="self-center text-2xl font-semibold whitespace-nowrap text-white">CyberShield</Link>
 
                     <div className="flex md:order-2 space-x-3 md:space-x-0 rtl:space-x-reverse">
 

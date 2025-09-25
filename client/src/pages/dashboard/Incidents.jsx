@@ -36,15 +36,15 @@ const Incidents = () => {
                     incidentList.map((incident, idx) => {
 
                         return (
-                            <div key={idx} className="relative flex justify-center items-center border border-black font-large overflow-x-auto shadow-md sm:rounded-lg flex p-8 m-8 gap-8">
+                            <div key={idx} className="relative bg-slate-900 flex justify-center items-center border border-black font-large overflow-x-auto shadow-md sm:rounded-lg flex p-8 m-8 gap-8">
 
-                                <p className="ml-4 mr-4 p-2 text-lg">{incident['@timestamp']}</p>
-                                <p className="ml-4 mr-4 p-2 text-lg">{incident.source_ip}</p>
-                                <p className="ml-4 mr-4 p-2 text-lg">{incident.alerts[0].rule.description}</p>
-                                <p className="ml-4 mr-4 p-2 text-lg">{incident.alerts[0].agent.name}</p>
+                                <p className="ml-4 mr-4 p-2 text-white text-lg">{incident['@timestamp']}</p>
+                                <p className="ml-4 mr-4 p-2 text-white text-lg">{incident.agent?.ip || "Null"}</p>
+                                <p className="ml-4 mr-4 p-2 text-white text-lg">{incident.alerts[0].rule.description}</p>
+                                <p className="ml-4 mr-4 p-2 text-white text-lg">{incident.alerts[0].agent.name}</p>
                                 <span className={`inline-flex items-center rounded-md bg-gray-50 px-2 py-1  text-green-700 ring-1 ring-green-600/20 ring-inset`}>{Math.max(...incident.alerts.map(element=>element.rule.level))}</span>
 
-                                <button className="text-white bg-blue-700 rounded-sm p-2" onClick={() => { handelNavigate(incident.alerts[0]._id) }}>Investigate</button>
+                                <button className=" bg-gradient-to-r from-purple-500 to-blue-600 bg-indigo-700 text-white font-bold py-2 px-4 rounded-full text-sm " onClick={() => { handelNavigate(incident.alerts[0]._id) }}>Investigate</button>
                             </div>
 
                         )

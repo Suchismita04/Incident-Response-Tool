@@ -6,7 +6,7 @@ import ThreatInteligence from "./ThreatInteligence";
 import Alart from "./Alarts";
 import { Button } from "../../components/ui/Button";
 import DataContext from "../../context/DataContext";
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import dayjs from "dayjs";
 
@@ -14,10 +14,37 @@ import dayjs from "dayjs";
 const IncidentResponseDashboard = () => {
 
   const { id } = useParams()
-
+  const [ip, setIp] = useState("")
+  const [pId, setPid] = useState("")
+  const [requiredActions, setRequiredActions] = useState([])
   const [incidentData, setIncidentData] = useState([])
   const actions = ["Block Ip", "Isolate Host", "Kill Process"]
+  const navigate = useNavigate()
 
+  // Helper function to extract PIDs from full_log
+  const extractPIDs = (fullLog) => {
+    // This regex matches numbers before a slash, e.g., 2892/wazuh-remoted
+    const regex = /(\d+)\/[^\s]+/g;
+    const pids = [];
+    let match;
+    while ((match = regex.exec(fullLog)) !== null) {
+      pids.push(match[1]);
+    }
+    return pids;
+  };
+
+
+
+  const handleCheckboxChange = (action) => {
+    if (requiredActions.includes(action)) {
+
+      setRequiredActions(requiredActions.filter((a) => a !== action));
+
+    } else {
+
+      setRequiredActions([...requiredActions, action]);
+    }
+  };
   const fetchSingleIncident = async (id) => {
     const res = await axios.get(`http://localhost:4000/api/getSingleIncident/${id}`)
 
@@ -36,10 +63,44 @@ const IncidentResponseDashboard = () => {
   }
 
 
+  const handleMarkComplete = async () => {
+    const payload = {
+      actions: requiredActions,
+    };
+
+    // Only include IP if "Block Ip" is selected
+    if (requiredActions.includes("Block Ip") && incidentData[0]?.agent?.ip) {
+      payload.ip = incidentData[0].agent.ip;
+    }
+
+    // Only include PID(s) if "Kill Process" is selected
+    if (requiredActions.includes("Kill Process") && incidentData[0]?.full_log) {
+      payload.pids = extractPIDs(incidentData[0].full_log); // returns array of PIDs
+    }
+
+    try {
+      const res = await axios.post("http://localhost:4000/action/execute", payload);
+      console.log("Response:", res.data);
+      navigate('/generateReport')
+    } catch (err) {
+      console.error("Error:", err);
+    }
+  };
+
+
+
+
   useEffect(() => {
     fetchSingleIncident(id)
 
   }, [id])
+
+
+  useEffect(() => {
+    // handleCheckboxChange()
+    console.log("actions", requiredActions)
+
+  }, [requiredActions])
 
 
   useEffect(() => {
@@ -129,18 +190,23 @@ const IncidentResponseDashboard = () => {
             <h3 className="text-lg font-semibold text-slate-300 mb-4">Required Actions</h3>
             <div id="actions-list" className="space-y-3">
 
-              {actions.map((data, idx) => {
-                return (
-                  <div key={idx} className="flex items-start text-slate-300">
-                    <input id="link-checkbox" type="checkbox" value={data} className="w-4 m-2 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" />
-                    <span className="checkmark"></span>
-                    <label>
-                      {data}
-                    </label>
-                  </div>
-
-                )
-              })}
+              {actions.map((data, idx) => (
+                <div key={idx} className="flex items-center text-slate-300">
+                  <input
+                    id={`action-${idx}`}
+                    type="checkbox"
+                    value={data}
+                    checked={requiredActions.includes(data)}
+                    onChange={() => handleCheckboxChange(data)}
+                    className="w-4 m-2 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded 
+                       focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 
+                       focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                  />
+                  <label htmlFor={`action-${idx}`} className="ml-2 cursor-pointer">
+                    {data}
+                  </label>
+                </div>
+              ))}
 
               {/* threat  Intelligence Section */}
 
@@ -153,7 +219,7 @@ const IncidentResponseDashboard = () => {
               </div>
 
             </div>
-            <button className="w-full bg-gradient-to-r from-purple-500 to-blue-600 bg-indigo-700 text-white font-bold py-2 px-4 rounded-full text-sm mt-6 transition duration-300 ease-in-out">
+            <button onClick={handleMarkComplete} className="w-full bg-gradient-to-r from-purple-500 to-blue-600 bg-indigo-700 text-white font-bold py-2 px-4 rounded-full text-sm mt-6">
               <svg className="w-4 h-4 inline-block mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
               Mark as Complete
             </button>
