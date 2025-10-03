@@ -1,8 +1,108 @@
+import dayjs from "dayjs";
+import jsPDF from "jspdf"
+import { useEffect, useState } from "react"
+import { Link, useLocation } from "react-router-dom"
 
 
 
 
 const Report = () => {
+
+
+    // Define the array
+    const reportTypes = [
+        "Executive Summary",
+        "Detailed Incident Analysis",
+        "Forensic Analysis Report",
+        "Compliance & Regulatory Report",
+        "Simulation After-Action Report"
+    ];
+
+    const location = useLocation();
+    const { incident, actions, startDate: passedStartDate, endDate: passedEndDate } = location.state || {};
+
+    const [incidents, setIncidents] = useState([]);
+    const [reportType, setReportType] = useState([]);
+    const [includeOpt, setIncludeOpt] = useState(actions || []);
+    const [startDate, setStartDate] = useState(passedStartDate || "");
+    const [endDate, setEndDate] = useState(passedEndDate || "");
+    const [reportPreview, setReportPreview] = useState("");
+    const [isGenerated, setIsGenerated] = useState(false);
+
+  
+
+
+    useEffect(() => {
+        if (incident) setIncidents([incident]);
+    }, [incident]);
+
+    useEffect(() => {
+        if (incident) {
+            console.log("Incident received in Report:", incident);
+        }
+    }, [incident]);
+
+
+
+    const handleGenerateReport = () => {
+        console.log("working")
+        if (incidents.length == 0) {
+            alert("Please select at least one incident and a report type.");
+
+        }
+
+        const previewText = `
+Report Type: ${reportType || "N/A"}
+Date Range: ${startDate || "N/A"} → ${endDate || "N/A"}
+
+Selected Incidents:
+${incidents.map((inc) => {
+            const formattedTime = dayjs(inc["@timestamp"]).format("hh:mm A - MMM DD, YYYY");
+            return `- ${inc.rule?.description || "Unknown"} (Severity: ${inc.rule?.level || "N/A"}, Detected: ${formattedTime}, Agent: ${inc.agent?.name || "N/A"} - ${inc.agent?.ip || "N/A"})`;
+        }).join("\n")}
+
+Included Sections:
+${includeOpt.length > 0 ? includeOpt.map(opt => {
+            return incidents.map(inc => {
+                let sectionData = "";
+                if (opt === "Timeline & Logs") sectionData = `Timeline: ${inc.timeline?.join(", ") || inc["@timestamp"]}`;
+                if (opt === "Action Status") sectionData = `Actions Taken: ${inc.actions?.join(", ") || "Pending"}`;
+                if (opt === "Forensics") sectionData = `Forensics: ${inc.forensics?.join(", ") || "Not Available"}`;
+                return `${opt}: ${sectionData}`;
+            }).join("\n");
+        }).join("\n") : "None"}
+    
+--- END OF PREVIEW ---
+`;
+
+        setReportPreview(previewText);
+        setIsGenerated(true);
+
+        setReportPreview(previewText);
+        console.log("report", reportPreview)
+        setIsGenerated(true);
+    }
+
+    const handleDownloadPDF = () => {
+        var doc = new jsPDF()
+
+
+        doc.setFontSize(16);
+        doc.text("CyberShield Incident Report", 10, 10);
+
+
+        doc.setFontSize(12);
+        const lines = doc.splitTextToSize(reportPreview, 180);
+        doc.text(lines, 10, 20);
+
+        doc.save("incident-report.pdf");
+    };
+
+
+
+
+
+
     return (
         <>
 
@@ -16,7 +116,7 @@ const Report = () => {
                 <div className="flex items-center space-x-4">
                     <button className="text-slate-400 hover:text-white transition duration-200">
                         <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
-                        <span className="ml-1">Back to Dashboard</span>
+                        <Link to={'/dashboard'} className="ml-1">Back to Dashboard</Link>
                     </button>
                 </div>
             </header>
@@ -30,69 +130,54 @@ const Report = () => {
 
                     <div className="space-y-6">
 
-                        <div>
-                            <label for="incident-select" className="block text-slate-300 text-sm font-semibold mb-2">Select Incident(s)</label>
-                            <select id="incident-select" className="input-field" multiple>
-                                <option value="INC-2025-001">INC-2025-001: Malware Infection (Critical)</option>
-                                <option value="INC-2025-002">INC-2025-002: Phishing Attempt (High)</option>
-                                <option value="INC-2025-003">INC-2025-003: Unauthorized Access (Critical)</option>
-                                <option value="SIM-2025-01-05">SIM-2025-01-05: APT Simulation (High)</option>
-                            </select>
-                            <p className="text-xs text-slate-500 mt-1">Hold Ctrl/Cmd to select multiple incidents.</p>
+                        <div >
+                            <label htmlFor="incident-select" className="block text-white text-sm font-semibold mb-2">Selected Incident(s)</label>
+                            
+                                {incidents.map((data, idx) => {
+                                    return <div value={data} key={idx} className="text-white"> {data.rule?.description}</div>
+
+                                })}
                         </div>
 
 
                         <div>
-                            <label for="report-type" className="block text-slate-300 text-sm font-semibold mb-2">Report Type / Template</label>
-                            <select id="report-type" className="input-field">
-                                <option value="summary">Executive Summary</option>
-                                <option value="detailed">Detailed Incident Analysis</option>
-                                <option value="forensic">Forensic Analysis Report</option>
-                                <option value="compliance">Compliance & Regulatory Report</option>
-                                <option value="simulation">Simulation After-Action Report</option>
-                            </select>
+                            <label htmlFor="report-type" className="block text-slate-300 text-sm font-semibold mb-2">Report Type / Template</label>
+                            <div className="text-white bg-slate-600 rounded m-2 p-2 input-field">
+                                <select
+                                    value={reportType}
+                                    onChange={(e) => setReportType(e.target.value)}
+                                    className="bg-slate-700 text-white p-2 rounded w-full"
+                                 
+                                >
+                                    <option value="">Select Report Type</option>
+                                    {reportTypes.map((type, idx) => (
+                                        <option key={idx} value={type}>{type}</option>
+                                    ))}
+                                </select>
+                            </div>
                         </div>
 
 
                         <div className="grid grid-cols-2 gap-4">
                             <div>
-                                <label for="start-date" className="block text-slate-300 text-sm font-semibold mb-2">Start Date</label>
-                                <input type="date" id="start-date" className="input-field" />
+                                <label htmlFor="start-date" className="block text-slate-300 text-sm font-semibold mb-2">Start Date</label>
+                                <input type="date" onChange={(e) => { setStartDate(e.target.value) }} id="start-date" className="text-white bg-slate-600 rounded m-2 p-2" />
                             </div>
                             <div>
-                                <label for="end-date" className="block text-slate-300 text-sm font-semibold mb-2">End Date</label>
-                                <input type="date" id="end-date" className="input-field" />
+                                <label htmlFor="end-date" className="block text-slate-300 text-sm font-semibold mb-2">End Date</label>
+                                <input type="date" onChange={(e) => { setEndDate(e.target.value) }} id="end-date" className="text-white bg-slate-600 rounded m-2 p-2" />
                             </div>
                         </div>
 
 
                         <div>
-                            <h3 className="text-slate-300 text-sm font-semibold mb-2">Include:</h3>
-                            <div className="flex flex-wrap gap-x-6 gap-y-2">
-                                <label className="inline-flex items-center text-slate-300 cursor-pointer" />
-                                <input type="checkbox" className="form-checkbox text-indigo-500 bg-slate-700 border-slate-600 rounded" checked />
-                                <span className="ml-2">Timeline & Logs</span>
-
-                                <label className="inline-flex items-center text-slate-300 cursor-pointer" />
-                                <input type="checkbox" className="form-checkbox text-indigo-500 bg-slate-700 border-slate-600 rounded" checked />
-                                <span className="ml-2">Action Status</span>
-
-                                <label className="inline-flex items-center text-slate-300 cursor-pointer" />
-                                <input type="checkbox" className="form-checkbox text-indigo-500 bg-slate-700 border-slate-600 rounded" />
-                                <span className="ml-2">Forensic Data</span>
-
-                                <label className="inline-flex items-center text-slate-300 cursor-pointer">
-                                    <input type="checkbox" className="form-checkbox text-indigo-500 bg-slate-700 border-slate-600 rounded" />
-                                    <span className="ml-2">Team Notes</span>
-                                </label>
-                                <label className="inline-flex items-center text-slate-300 cursor-pointer">
-                                    <input type="checkbox" className="form-checkbox text-indigo-500 bg-slate-700 border-slate-600 rounded" />
-                                    <span className="ml-2">Affected Assets Details</span>
-                                </label>
+                            <h3 className="text-slate-300 text-sm font-semibold mb-2">Included Sections:</h3>
+                            <div className="flex flex-wrap gap-x-6 gap-y-2 text-white bg-slate-600 rounded w-60 p-2 m-2">
+                                {includeOpt.length > 0 ? includeOpt.join(", ") : "None"}
                             </div>
                         </div>
 
-                        <button id="generate-report-btn" className="w-full bg-gradient-to-r from-purple-500 to-blue-600 text-white font-bold py-3 px-6 rounded-full shadow-lg transition duration-300 ease-in-out">
+                        <button id="generate-report-btn" onClick={handleGenerateReport} className="w-full bg-gradient-to-r from-purple-500 to-blue-600 text-white font-bold py-3 px-6 rounded-full shadow-lg transition duration-300 ease-in-out">
                             <span id="button-text">GENERATE REPORT</span>
                             <div id="button-spinner" className="spinner ml-3 hidden"></div>
                         </button>
@@ -104,17 +189,17 @@ const Report = () => {
                     <h2 className="text-2xl font-bold text-white mb-6">Report Preview</h2>
 
                     <div id="report-preview-area" className="bg-slate-900 bg-opacity-50 border border-slate-700 rounded-lg p-6 h-[500px] overflow-y-auto custom-scrollbar text-slate-300 text-sm leading-relaxed whitespace-pre-wrap">
-                        <p className="text-center text-slate-500 py-10">Select parameters and click "GENERATE REPORT" to see a preview.</p>
+                        {reportPreview || (<p className="text-center text-slate-500 py-10">Select parameters and click "GENERATE REPORT" to see a preview.</p>)}
                     </div>
 
                     <div className="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4 mt-6">
-                        <button id="download-pdf-btn" className="flex-1 bg-slate-700 hover:bg-slate-600 text-white font-semibold py-3 rounded-lg flex items-center justify-center transition duration-200" disabled>
-                            <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                        <button
+                            id="download-pdf-btn"
+                            className={`flex-1 ${isGenerated ? "bg-slate-700 hover:bg-slate-600" : "bg-slate-800 cursor-not-allowed"} text-white font-semibold py-3 rounded-lg flex items-center justify-center transition duration-200`}
+                            disabled={!isGenerated}
+                            onClick={handleDownloadPDF}
+                        >
                             Download PDF
-                        </button>
-                        <button id="view-in-browser-btn" className="flex-1 bg-slate-700 hover:bg-slate-600 text-white font-semibold py-3 rounded-lg flex items-center justify-center transition duration-200" disabled>
-                            <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
-                            View Full Report
                         </button>
                     </div>
                 </div>

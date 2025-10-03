@@ -68,12 +68,12 @@ const IncidentResponseDashboard = () => {
       actions: requiredActions,
     };
 
-    // Only include IP if "Block Ip" is selected
+    
     if (requiredActions.includes("Block Ip") && incidentData[0]?.agent?.ip) {
       payload.ip = incidentData[0].agent.ip;
     }
 
-    // Only include PID(s) if "Kill Process" is selected
+    
     if (requiredActions.includes("Kill Process") && incidentData[0]?.full_log) {
       payload.pids = extractPIDs(incidentData[0].full_log); // returns array of PIDs
     }
@@ -81,7 +81,12 @@ const IncidentResponseDashboard = () => {
     try {
       const res = await axios.post("http://localhost:4000/action/execute", payload);
       console.log("Response:", res.data);
-      navigate('/generateReport')
+      navigate('/generateReport',{ 
+      state: { 
+        incident: incidentData[0], 
+        actions: requiredActions 
+      } 
+    })
     } catch (err) {
       console.error("Error:", err);
     }
