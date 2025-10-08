@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import LogIn from "../pages/User/LogIn";
 import ModalComponent from "./ModalComponent";
 import SignUp from "../pages/User/SignUp";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 
 
 
@@ -13,7 +13,10 @@ const Nav = () => {
     const [view, setView] = useState("login");
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
-   const  navigate= useNavigate()
+    const navigate = useNavigate()
+    const location = useLocation()
+
+    const isDisabled = location.pathname != "/dashboard"
 
 
     return (
@@ -29,13 +32,22 @@ const Nav = () => {
 
                     <div className="flex md:order-2 space-x-3 md:space-x-0 rtl:space-x-reverse">
 
-                        <button type="button" onClick={() => { setView("login"); setOpen(true); }} className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Get started</button>
-                        <ModalComponent open={open}
+
+                        {isDisabled ? (<><button type="button" onClick={() => { setView("login"); setOpen(true); }} className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Get started</button><ModalComponent open={open}
                             handleClose={handleClose}
-                            component={view === 'login' ? 
-                            <LogIn switchToSignUp={()=>setView('SignUp')} onClose={handleClose} /> 
-                            : <SignUp switchToLogin={()=>setView('login')} onClose={handleClose} />}
-                        />
+                            component={view === 'login' ?
+                                <LogIn switchToSignUp={() => setView('SignUp')} onClose={handleClose} />
+                                : <SignUp switchToLogin={() => setView('login')} onClose={handleClose} />} /></>) : <>
+                            {/* Show user account logo when on dashboard */}
+                            <img
+                                src="/assets/user-avatar.png"
+                                alt="User"
+                                className="w-10 h-10 rounded-full cursor-pointer border-2 border-white"
+                                onClick={() => navigate("/profile")}
+                            />
+                        </>}
+
+
 
 
                         <button data-collapse-toggle="navbar-sticky" type="button" className="inline-flex items-center p-2 w-10 h-10 justify-center text-sm text-gray-500 rounded-lg md:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600" aria-controls="navbar-sticky" aria-expanded="false">

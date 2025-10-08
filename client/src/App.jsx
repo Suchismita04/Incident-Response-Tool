@@ -72,7 +72,7 @@ function App() {
       element: (<PlainLayout />),
       children: [
         {
-          path: "/account",
+          path: "/profile",
           element: <UserAcc />
         },
          {

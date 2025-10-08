@@ -1,7 +1,7 @@
 import dayjs from "dayjs";
 import jsPDF from "jspdf"
 import { useEffect, useState } from "react"
-import { Link, useLocation } from "react-router-dom"
+import { Link, useLocation, useNavigate } from "react-router-dom"
 
 
 
@@ -29,6 +29,8 @@ const Report = () => {
     const [reportPreview, setReportPreview] = useState("");
     const [isGenerated, setIsGenerated] = useState(false);
 
+
+    const navigate=useNavigate()
   
 
 
@@ -61,7 +63,7 @@ ${incidents.map((inc) => {
             return `- ${inc.rule?.description || "Unknown"} (Severity: ${inc.rule?.level || "N/A"}, Detected: ${formattedTime}, Agent: ${inc.agent?.name || "N/A"} - ${inc.agent?.ip || "N/A"})`;
         }).join("\n")}
 
-Included Sections:
+Included Actions:
 ${includeOpt.length > 0 ? includeOpt.map(opt => {
             return incidents.map(inc => {
                 let sectionData = "";
@@ -96,6 +98,7 @@ ${includeOpt.length > 0 ? includeOpt.map(opt => {
         doc.text(lines, 10, 20);
 
         doc.save("incident-report.pdf");
+        navigate('/dashboard')
     };
 
 

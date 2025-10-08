@@ -65,15 +65,16 @@ const IncidentResponseDashboard = () => {
 
   const handleMarkComplete = async () => {
     const payload = {
+      id: id,
       actions: requiredActions,
     };
 
-    
+
     if (requiredActions.includes("Block Ip") && incidentData[0]?.agent?.ip) {
       payload.ip = incidentData[0].agent.ip;
     }
 
-    
+
     if (requiredActions.includes("Kill Process") && incidentData[0]?.full_log) {
       payload.pids = extractPIDs(incidentData[0].full_log); // returns array of PIDs
     }
@@ -81,12 +82,19 @@ const IncidentResponseDashboard = () => {
     try {
       const res = await axios.post("http://localhost:4000/action/execute", payload);
       console.log("Response:", res.data);
-      navigate('/generateReport',{ 
-      state: { 
-        incident: incidentData[0], 
-        actions: requiredActions 
-      } 
-    })
+      setIncidentData([])
+      setTimeout(() => {
+        navigate('/generateReport', {
+          state: {
+            incident: incidentData[0],
+            actions: requiredActions
+          }
+
+        })
+      }, 100)
+
+
+
     } catch (err) {
       console.error("Error:", err);
     }

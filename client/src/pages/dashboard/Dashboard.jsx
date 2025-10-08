@@ -2,7 +2,7 @@ import Incidents from "./Incidents";
 import Card from "../../components/Card";
 import { useContext } from "react";
 import DataContext from "../../context/DataContext";
-import { Link } from 'react-router-dom'; // Assuming you use react-router-dom for navigation
+import { Link } from 'react-router-dom'; 
 
 // Helper function to calculate high-level alerts
 // (Keeping the data logic separate from the presentation)
@@ -23,23 +23,19 @@ const calculateHighAlerts = (incidentList) => {
 };
 
 const Dashboard = () => {
-  // Destructure the context values
+
   const { incidentList, error } = useContext(DataContext);
 
-  // Fallback for incidentList
+  
   const incidents = incidentList || [];
 
-  // Calculated values
+  
   const highAlertsCount = calculateHighAlerts(incidents);
   const totalIncidents = incidents.length;
   const activeAlerts = 24; // Placeholder
   const resolvedIncidents = 45; // Placeholder
 
-  // --- Component Styling Notes ---
-  // Background: Deep dark slate with subtle texture (simulated via shadows/borders).
-  // Glassmorphism: bg-slate-800/50 backdrop-blur-sm 
-  // Accent Colors: text-cyan-400 and text-fuchsia-400
-
+  
   return (
     <>
 
