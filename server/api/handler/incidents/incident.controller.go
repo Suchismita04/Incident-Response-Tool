@@ -71,7 +71,7 @@ func GetIncidents(w http.ResponseWriter, r *http.Request) {
 
 	user := os.Getenv("WAZUH_USER")
 	pass := os.Getenv("WAZUH_PASS")
-	api := os.Getenv("WAZUH_API")
+	api := os.Getenv("ELASTIC_API")
 	baseURL := fmt.Sprintf("https://%s", api)
 
 	url := baseURL + "/wazuh-alerts-*/_search"
@@ -484,7 +484,7 @@ func GetSingleIncidents(w http.ResponseWriter, r *http.Request) {
 
 	user := os.Getenv("WAZUH_USER")
 	pass := os.Getenv("WAZUH_PASS")
-	api := os.Getenv("WAZUH_API")
+	api := os.Getenv("ELASTIC_API")
 	baseUrl := fmt.Sprintf("https://%s", api)
 
 	// Search API instead of direct _doc GET
