@@ -11,10 +11,18 @@ import (
 	"server/internal/config"
 
 	"github.com/gorilla/mux"
+	"github.com/joho/godotenv"
 	"github.com/rs/cors"
+
+	"server/internal/util"
 )
 
 func main() {
+
+	if err := godotenv.Load(); err != nil {
+		log.Println("Warning: .env file not found")
+	}
+	util.InitES()
 	db := config.ConnectDB()
 	fmt.Println("Users Collection:", db.Name())
 	// defer cancel()
@@ -35,6 +43,6 @@ func main() {
 	})
 
 	handler := c.Handler(r)
-	log.Println("Starting server on :4000")
-	log.Fatal(http.ListenAndServe(":4000", handler))
+	log.Println("Starting server on :5000")
+	log.Fatal(http.ListenAndServe(":5000", handler))
 }
