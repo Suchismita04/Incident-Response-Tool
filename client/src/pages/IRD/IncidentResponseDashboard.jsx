@@ -21,6 +21,7 @@ const IncidentResponseDashboard = () => {
   const actions = ["Block Ip", "Isolate Host", "Kill Process"]
   const navigate = useNavigate()
 
+ 
   // Helper function to extract PIDs from full_log
   const extractPIDs = (fullLog) => {
     // This regex matches numbers before a slash, e.g., 2892/wazuh-remoted
@@ -64,8 +65,10 @@ const IncidentResponseDashboard = () => {
 
 
   const handleMarkComplete = async () => {
+    console.log("id from db:",id)
     const payload = {
-      id: id,
+      timestamp:incidentData[0]?.["@timestamp"],
+      alert_id: id,
       actions: requiredActions,
     };
 
@@ -117,7 +120,8 @@ const IncidentResponseDashboard = () => {
 
 
   useEffect(() => {
-    console.log(incidentData)
+     console.log("incidents data:",incidentData[0]?.["@timestamp"])
+
   }, [incidentData])
 
   return (
