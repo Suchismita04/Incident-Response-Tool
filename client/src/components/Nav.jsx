@@ -40,7 +40,7 @@ const Nav = () => {
                                 : <SignUp switchToLogin={() => setView('login')} onClose={handleClose} />} /></>) : <>
                             {/* Show user account logo when on dashboard */}
                             <img
-                                src="/assets/user-avatar.png"
+                                src="/public/userLogo.png"
                                 alt="User"
                                 className="w-10 h-10 rounded-full cursor-pointer border-2 border-white"
                                 onClick={() => navigate("/profile")}

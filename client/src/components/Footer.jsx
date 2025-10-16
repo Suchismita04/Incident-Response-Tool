@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom"
 
 
 
@@ -14,16 +15,16 @@ const Footer=()=>{
             <div>
                 <h3 className="text-lg font-semibold text-white mb-4">Platform</h3>
                 <ul className="space-y-2 text-sm">
-                    <li><a href="#" className="hover:text-white transition duration-200">Features Overview</a></li>
-                    <li><a href="#" className="hover:text-white transition duration-200">Integrations</a></li>
+                    <li><Link to="/aboutUs" className="hover:text-white transition duration-200">Features Overview</Link></li>
+                    {/* <li><a href="#" className="hover:text-white transition duration-200">Integrations</a></li> */}
                     <li><a href="#" className="hover:text-white transition duration-200">Case Studies</a></li>
                 </ul>
             </div>
             <div>
                 <h3 className="text-lg font-semibold text-white mb-4">Company</h3>
                 <ul className="space-y-2 text-sm">
-                    <li><a href="#" className="hover:text-white transition duration-200">About Us</a></li>
-                    <li><a href="#" className="hover:text-white transition duration-200">Careers</a></li>
+                    <li><Link to="/aboutUs" className="hover:text-white transition duration-200">About Us</Link></li>
+                    {/* <li><a href="#" className="hover:text-white transition duration-200">Careers</a></li> */}
                     <li>Email: <a href="mailto:contact@cybershield.com" className="hover:text-white transition duration-200">contact@cybershield.com</a></li>
                 </ul>
             </div>
