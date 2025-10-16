@@ -13,8 +13,6 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/joho/godotenv"
 	"github.com/rs/cors"
-
-	"server/internal/util"
 )
 
 func main() {
@@ -22,7 +20,6 @@ func main() {
 	if err := godotenv.Load(); err != nil {
 		log.Println("Warning: .env file not found")
 	}
-	util.InitES()
 	db := config.ConnectDB()
 	fmt.Println("Users Collection:", db.Name())
 	// defer cancel()
